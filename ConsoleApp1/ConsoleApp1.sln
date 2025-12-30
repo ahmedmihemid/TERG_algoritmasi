@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TERG", "ConsoleApp1\TERG.csproj", "{F6B5ED34-3C61-4055-9BAD-088B91A37BDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IT_TJRG", "ConsoleApp1\IT_TJRG.csproj", "{F6B5ED34-3C61-4055-9BAD-088B91A37BDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
