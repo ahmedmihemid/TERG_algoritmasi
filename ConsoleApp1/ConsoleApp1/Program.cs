@@ -3,51 +3,70 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
     internal class Program
     {
-        static ulong CollectEntropy()
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            private static long _counter1 = 0;
+            private static long _counter2 = 0;
+            private static bool _keepRunning = true;
 
-            for (int i = 0; i < 1000; i++)
+            static uint GenerateAbsoluteChaos()
             {
-                Math.Sqrt(i);
+                _counter1 = 0;
+                _counter2 = 0;
+                _keepRunning = true;
+
+                Thread t1 = new Thread(() => {
+                    while (_keepRunning) { _counter1++; }
+                });
+
+                Thread t2 = new Thread(() => {
+                    while (_keepRunning) { _counter2++; }
+                });
+
+                t1.Start();
+                t2.Start();
+
+                Thread.Sleep(5);
+
+                _keepRunning = false; 
+                t1.Join();
+                t2.Join();
+               
+                long difference = Math.Abs(_counter1 - _counter2);
+               
+                ulong finalSeed = (ulong)difference ^ (ulong)Stopwatch.GetTimestamp();
+
+                finalSeed ^= finalSeed << 13;
+                finalSeed ^= finalSeed >> 7;
+                finalSeed ^= finalSeed << 17;
+
+                return (uint)(finalSeed % uint.MaxValue);
             }
 
-            sw.Stop();
-            return (ulong)sw.ElapsedTicks;
-        }
-
-        static ulong MixBits(ulong x)
-        {
-            x ^= x << 13;
-            x ^= x >> 7;
-            x ^= x << 17;
-            return x;
-        }
-
-        static uint GenerateRandom()
-        {
-            ulong entropy = CollectEntropy();
-            ulong mixed = MixBits(entropy);
-            return (uint)(mixed % uint.MaxValue);
-        }
-
-        static void Main(string[] args)
-        {
-            Console.WriteLine("TERG Random Numbers:\n");
-
-            for (int i = 0; i < 10; i++)
+            static void Main(string[] args)
             {
-                Console.WriteLine(GenerateRandom());
-            }
+                Console.WriteLine("--- Thermal Jitter Race Algorithm ---");
+                Console.WriteLine("Direct hardware-level entropy...\n");
 
-            Console.ReadLine();
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.WriteLine($"Chaos Number {i + 1}: {GenerateAbsoluteChaos()}");
+                }
+
+                Console.ReadLine();
+            }
         }
     }
-}
+
+
+
+
+
+
+
+
